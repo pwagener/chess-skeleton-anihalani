@@ -92,13 +92,41 @@ public class GameState {
     public Piece getPieceAt(Position position) {
         return positionToPieceMap.get(position);
     }
+    
+    /**
+     * Get the hashMap containing all the pieces and their corresponding pieces
+     * @return The HashMap containing all position-piece pairs.
+     */
+    public Map<Position, Piece> getAllPiecesOnBoard() {
+        return positionToPieceMap;
+    }
 
     /**
      * Method to place a piece at a given position
      * @param piece The piece to place
      * @param position The position
      */
-    private void placePiece(Piece piece, Position position) {
+    // @Amit made the method public to use it during moving pieces 
+    public void placePiece(Piece piece, Position position) {
         positionToPieceMap.put(position, piece);
+    }
+    
+    /**
+     * Method to remove a piece from a given position
+     * @param piece The piece to place
+     * @param position The position
+     */
+    public void removePiece(Piece piece, Position position) {
+        positionToPieceMap.remove(position);
+    }
+  
+    /**
+     * Method to remove a piece from a given position
+     * @param piece The piece to place
+     * @param position The position
+     */
+    //OVERLOADED METHOD
+    public void removePiece(Position position) {
+        positionToPieceMap.remove(position);
     }
 }

@@ -1,6 +1,8 @@
 package chess.pieces;
-
+import java.util.Set;
+import chess.GameState;
 import chess.Player;
+import chess.Position;
 
 /**
  * A base class for chess pieces
@@ -26,4 +28,6 @@ public abstract class Piece {
     }
 
     protected abstract char getIdentifyingCharacter();
+  //@Amit - This function will be implemented by each piece to get their respective valid moves
+    public abstract Set<Position> getValidMoves(GameState currentState, Position currentPosition);
 }

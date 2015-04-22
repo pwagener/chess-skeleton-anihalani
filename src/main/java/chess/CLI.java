@@ -3,6 +3,8 @@ package chess;
 import chess.pieces.Piece;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class provides the basic CLI interface to the Chess game.
@@ -63,8 +65,9 @@ public class CLI {
                     System.exit(0);
                 } else if (input.equals("board")) {
                     writeOutput("Current Game:");
-                } else if (input.equals("list")) {
-                    writeOutput("====> List Is Not Implemented (yet) <====");
+                } else if (input.equals("list")) {                    
+                	// @Amit - 	the list command will display all the possible moves for the current player
+                	displayPossibleMoves();
                 } else if (input.startsWith("move")) {
                     writeOutput("====> Move Is Not Implemented (yet) <====");
                 } else {
@@ -135,6 +138,31 @@ public class CLI {
         }
 
         builder.append(NEWLINE);
+    }
+    
+    //@Amit - This function will create a list of all valid and possible moves
+    private void displayPossibleMoves(){
+    	List<String> allPossibleMoves = new ArrayList<String>();    	
+    	for(Position p : gameState.getAllPiecesOnBoard().keySet()){
+    		Piece tempPiece = gameState.getAllPiecesOnBoard().get(p);
+    		if(tempPiece.getOwner() == gameState.getCurrentPlayer()){
+    			allPossibleMoves.addAll(getValidMovesForPiece(gameState,tempPiece, p));
+    			//for(Piece p : (tempPiece.getValidMoves(gameState, p)))
+    		}
+    	}    	
+    	for(String  s : allPossibleMoves){
+    		 writeOutput(s);    		 
+    	}
+    }
+    
+   //@Amit - This function will covert a set of possible positions for a piece at position p to a list of strings 
+    private List<String> getValidMovesForPiece(GameState gameState, Piece piece, Position p){
+    	Position[] validPositions = piece.getValidMoves(gameState, p).toArray(new Position[0]);
+    	List<String> fromAndToMoves = new ArrayList<String>();    	
+    	for(int i =0; i < validPositions.length; i++){
+    		fromAndToMoves.add(p+" "+validPositions[i]);
+    	}
+    	return fromAndToMoves;    	
     }
 
     public static void main(String[] args) {

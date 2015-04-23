@@ -21,7 +21,12 @@ public class Rook extends Piece {
 		return 'r';
 	}
 
-	//This method would return all the possible valid moves for a Rook at the given position
+	/**@author Amit
+	 * Return a set of all valid moves for a Rook
+	 * @param currentState - The current state of the game
+	 * @param currentPosition - The current position of the Rook
+	 * @return Set of valid positions
+	 */
 	@Override
 	public Set<Position> getValidMoves(GameState currentState, Position currentPosition) {
 		//This set would contain a list of all valid positions

@@ -31,7 +31,7 @@ public class PawnTest {
 	}
 	
 	/**
-	 * Test method for {@link chess.pieces.Knight#getValidMoves(chess.GameState, chess.Position)}.
+	 * Test method for {@link chess.pieces.Pawn#getValidMoves(chess.GameState, chess.Position)}.
 	 * Test for position b1
 	 */	
 
@@ -41,19 +41,16 @@ public class PawnTest {
     	Set<String> expectedResults = populateExpectedResults();    	
     	    	
     	// getting the set of positions for the original knight positions b1 and g1 from the logic we have implemented
-    	positions = pawn.getValidMoves(currentState, start);
-    	
+    	positions = pawn.getValidMoves(currentState, start);    	
     	// checking if null is not returned
     	assertNotNull(positions);    	
     	
     	// checking if all values in result are present in expected result
     	for(Position p : positions ){
     		assertTrue(expectedResults.contains(p.toString()));    		
-    	}
-    	
+    	}    	
     	//checking if count of both sets are equal to assure same # of positions are returned
-    	assertTrue(positions.size() == expectedResults.size());    	
-    	
+    	assertTrue(positions.size() == expectedResults.size());    	    	
     }
 	
 	@After
@@ -63,9 +60,9 @@ public class PawnTest {
 		currentState.reset();
 	}
 	
-	
-	
-	// populating a list for expected results
+	/**@author Amit
+	 * Populates a list for expected results
+	 */
     public Set<String> populateExpectedResults(){
     	Set<String> expectedResults = new HashSet<String>();
     	// single block, double block and diagonal move for kill    	

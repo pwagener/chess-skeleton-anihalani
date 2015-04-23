@@ -22,7 +22,13 @@ public class Knight extends Piece {
 	protected char getIdentifyingCharacter() {
 		return 'n';
 	}
-	//@Amit - This function will return a set of all possible moves for a Knight at <currentPosition>
+	
+	/**@author Amit
+	 * Return a set of all valid moves for a Knight
+	 * @param currentState - The current state of the game
+	 * @param currentPosition - The current position of the Knight
+	 * @return Set of valid positions
+	 */
 	@Override
 	public Set<Position> getValidMoves(GameState currentState, Position currentPosition) {
 
@@ -44,7 +50,7 @@ public class Knight extends Piece {
 		// South West direction: x-1,y-2 and x-2,y-1
 		possibleCoordinatesForKnight.add(Arrays.asList(-1,-2));
 		possibleCoordinatesForKnight.add(Arrays.asList(-2,-1));
-
+		// Add only the valid positions
 		for(List<Integer> l : possibleCoordinatesForKnight){
 			if(Position.isOnBoard((char)((int)currentPosition.getColumn()+l.get(0)), currentPosition.getRow()+l.get(1))){
 				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+l.get(0)), currentPosition.getRow()+l.get(1))) == null )){

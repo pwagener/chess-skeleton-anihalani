@@ -23,7 +23,12 @@ public class King extends Piece {
 		return 'k';
 	}
 
-	//@Amit - This function will return a set of all possible moves for a King at <currentPosition>
+	/**@author Amit
+	 * Return a set of all valid moves for a King
+	 * @param currentState - The current state of the game
+	 * @param currentPosition - The current position of the King
+	 * @return Set of valid positions
+	 */
 	@Override
 	public Set<Position> getValidMoves(GameState currentState, Position currentPosition) {
 		//This set would contain a list of all valid positions
@@ -42,8 +47,8 @@ public class King extends Piece {
 		possibleCoordinateChanges.add(Arrays.asList(-1,1));
 		// South East and South West
 		possibleCoordinateChanges.add(Arrays.asList(1,-1));
-		possibleCoordinateChanges.add(Arrays.asList(-1,-1));
-		
+		possibleCoordinateChanges.add(Arrays.asList(-1,-1));		
+		// check all the possible coordinates and only add the valid ones.
 		for(List<Integer> l : possibleCoordinateChanges){
 			if(Position.isOnBoard((char)((int)currentPosition.getColumn()+l.get(0)), currentPosition.getRow()+l.get(1))){
 				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+l.get(0)), currentPosition.getRow()+l.get(1))) == null )){

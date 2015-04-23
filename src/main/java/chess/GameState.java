@@ -124,7 +124,7 @@ public class GameState {
 		positionToPieceMap.remove(position);
 	}
 
-	/**
+	/**@Amit
 	 * Method to remove a piece from a given position
 	 * @param piece The piece to place
 	 * @param position The position
@@ -134,7 +134,7 @@ public class GameState {
 		positionToPieceMap.remove(position);
 	}
 
-	/**
+	/**@Amit
 	 * Method to move a piece from <fromPosition> position to <toPosition> 
 	 * @param fromPosition The current position of the piece
 	 * @param position The destination position for the piece
@@ -145,7 +145,9 @@ public class GameState {
 		positionToPieceMap.put(toPosition, p);
 	}
 
-	//@Amit - This function returns true if the current player's king is under threat.
+	/**@author Amit
+	 * Returns True if Current Player's King is under Threat, else returns False.
+	 */
 	public boolean isKingUnderThreat(){
 		Position currentKingPosition = (this.getCurrentPlayer() == Player.White) ? 
 				getKingPosition(Player.White) : getKingPosition(Player.Black);
@@ -159,8 +161,11 @@ public class GameState {
 				}    	
 				return false;
 	}
-
-	//@Amit - This function returns the position of the King for a given player.
+	
+	/**@author Amit
+	 * Returns the position of the King for current player 
+	 * @param player - current Player
+	 */
 	public Position getKingPosition(Player player){
 		for(Entry<Position,Piece> e : this.getAllPiecesOnBoard().entrySet()){
 			Piece piece =  e.getValue();

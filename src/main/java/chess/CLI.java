@@ -17,8 +17,11 @@ public class CLI {
 	private final PrintStream outStream;
 
 	private GameState gameState = null;
-	
-	//@Amit - This method is only for unit testing purpose
+
+	/**@author Amit
+	 * Sets the gameState property of an instance of CLI. This method is ONLY FOR UNIT TESTING PURPOSE. 
+	 * @param gs - gameState that is to be set for testing purpose
+	 */
 	public void setGameState(GameState gs){
 		gameState = gs;
 	}
@@ -57,7 +60,8 @@ public class CLI {
 		while (true) {
 			showBoard();
 			if(gameState.isKingUnderThreat() && getAllPossibleMoves().isEmpty()){
-				writeOutput("The game is over."+gameState.getCurrentPlayer()+" lost. \n");
+				Player winner = (gameState.getCurrentPlayer() == Player.White) ? Player.Black : Player.White;
+				writeOutput("The game is over. " + "Congrats to " + winner + ". \n");
 				startEventLoop();
 			}
 
@@ -84,10 +88,15 @@ public class CLI {
 					// @Amit - 	the list command will display all the possible moves for the current player
 					displayPossibleMoves();
 				} else if (input.startsWith("move")) {
-					//writeOutput("====> Move Is Not Implemented (yet) <====");
-					String fromPosition = input.split(" ")[1];
-					String toPosition = input.split(" ")[2];
-					move(fromPosition, toPosition);					
+					/*@Amit - 	the move command will move a piece to a target location 
+					 * ONLY if it is a valid move */
+					try{
+						String fromPosition = input.split(" ")[1];
+						String toPosition = input.split(" ")[2];
+						move(fromPosition, toPosition);
+					}catch (Exception e){
+						writeOutput("This is not a valid move command. The syntax is: move<space><FROM><space><TO>");
+					}
 				} else {
 					writeOutput("I didn't understand that.  Type 'help' for a list of commands.");
 				}
@@ -158,7 +167,9 @@ public class CLI {
 		builder.append(NEWLINE);
 	}
 
-	//@Amit - This function will print the list of all valid and possible moves
+	/**@author Amit
+	 * Prints the list of all valid and possible moves
+	 */
 	private void displayPossibleMoves(){
 		List<String> allPossibleMoves = getAllPossibleMoves();
 		for(String  s : allPossibleMoves){
@@ -166,7 +177,9 @@ public class CLI {
 		}
 	}
 
-	//@Amit - This function will return all Possible moves
+	/**@author Amit
+	 * Returns a List of all possible moves for current player
+	 */
 	protected List<String> getAllPossibleMoves(){
 		List<String> allPossibleMoves = new ArrayList<String>();
 		Position[] allPositions = gameState.getAllPiecesOnBoard().keySet().toArray(new Position[0]);
@@ -179,10 +192,17 @@ public class CLI {
 		return allPossibleMoves;
 	}
 
-	//@Amit - This function will covert a set of possible positions for a piece at position p to a list of strings 
+	/**@author Amit
+	 * Returns a List of valid moves (after converting to string "<From> <TO>") for a given piece
+	 * @param gameState - The current state of game
+	 * @param piece - The piece for which moves will be calculated
+	 * @param p - The current position of that piece
+	 */
 	private List<String> getValidMovesForPiece(GameState gameState, Piece piece, Position p){
+		//get logically valid moves and remove moves that put the king at check
 		Set<Position> logicallyValidPositions = piece.getValidMoves(gameState, p);
-		Position[] validPositions = piece.removeCheckPositions(logicallyValidPositions, gameState, p).toArray(new Position[0]);
+		Position[] validPositions = 
+				piece.removeCheckPositions(logicallyValidPositions, gameState, p).toArray(new Position[0]);
 		List<String> fromAndToMoves = new ArrayList<String>();    	
 		for(int i =0; i < validPositions.length; i++){
 			fromAndToMoves.add(p+" "+validPositions[i]);
@@ -190,13 +210,18 @@ public class CLI {
 		return fromAndToMoves;    	
 	}
 
-	//@Amit - This function moves a piece from <fromPos> to <toPosition>
-	private boolean move(String fromPos, String toPosition){	
+	/**@author Amit
+	 * Moves a piece from <fromPos> to <toPosition>
+	 * @param fromPos - The current position to piece
+	 * @param toPosition - The desired position to piece
+	 */
+	private void move(String fromPos, String toPosition){	
 		Position fromPosition = new Position(fromPos);		
 		Piece piece = gameState.getPieceAt(fromPosition);
 		if((piece==null) || (gameState.getCurrentPlayer() != piece.getOwner())){
 			writeOutput("The <FROM> position you provided is not correct. "
-					+ "There is no piece on that location OR the the location is not on the board");
+					+ "There is no piece on that location OR the the piece is not Your's "
+					+ "\n OR the location is not on the board");
 		}else{
 			Set<Position> logicallyValidMoves = piece.getValidMoves(gameState, fromPosition);
 			//@Amit -  Make a move only if the <To> position is Valid
@@ -204,15 +229,11 @@ public class CLI {
 				gameState.movePiece(fromPosition, new Position(toPosition));
 				writeOutput("Move from " +fromPosition + " to " +toPosition + " is successful!");				
 				gameState.changePlayer();
-				return true;
 			}else{
-				writeOutput("This is not a valid move");
-				return false;				
+				writeOutput("This is not a valid move");	
 			}
 		}
-		return false;
 	}
-
 
 	public static void main(String[] args) {
 		CLI cli = new CLI(System.in, System.out);

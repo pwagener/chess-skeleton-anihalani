@@ -67,7 +67,9 @@ public class RookTest {
 	
 	
 	
-	// populating a list for expected results
+	/**@author Amit
+	 * Populates a list for expected results
+	 */
     public Set<String> populateExpectedResults(){
     	Set<String> expectedResults = new HashSet<String>();
     

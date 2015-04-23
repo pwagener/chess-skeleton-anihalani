@@ -71,7 +71,9 @@ public class QueenTest {
 	
 	
 	
-	// populating a list for expected results
+	/**@author Amit
+	 * Populates a list for expected results 
+	 */
     public Set<String> populateExpectedResults(){
     	Set<String> expectedResults = new HashSet<String>();
     	
@@ -111,5 +113,4 @@ public class QueenTest {
     	expectedResults.add("c3");
     	return expectedResults;
     }
-
 }

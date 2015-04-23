@@ -20,78 +20,83 @@ public class Bishop extends Piece {
 		return 'b';
 	}
 
-	//@Amit - This function will return a set of all possible moves for a Bishop at <currentPosition>
+	/**@author Amit
+	 * Return a set of all possible moves for a Bishop
+	 * @param currentState The current state of the game
+	 * @param currentPosition The current position of the Bishop
+	 * @return Set of valid positions
+	 */
 	@Override
-	public Set<Position> getValidMoves(GameState currentState, Position origin) {
+	public Set<Position> getValidMoves(GameState currentState, Position currentPosition) {
 		//This set would contain a list of all valid positions
 		Set<Position> allValidPositions = new HashSet<Position>();
 
 		// These variables help us to identify when to stop searching in a particular direction.
 		// i.e. if the position is out of board or if there is a collision with opposite color player
-		boolean checkNorthEast = true;
-		boolean checkNorthWest = true;
-		boolean checkSouthEast = true;
-		boolean checkSouthWest = true;
+		boolean canMoveNorthEast = true;
+		boolean canMoveNorthWest = true;
+		boolean canMoveSouthEast = true;
+		boolean canMoveSouthWest = true;
 
 		for(int i=1; i<=8; i++){    		
 			// Valid locations in North east
-			if( Position.isOnBoard((char)((int)origin.getColumn()+i), origin.getRow()+i) && checkNorthEast){	
-				if((currentState.getPieceAt(new Position((char)((int)origin.getColumn()+i), origin.getRow()+i)) == null )){
-					Position newPosition = new Position((char)((int)origin.getColumn()+i), origin.getRow()+i);
+			if( Position.isOnBoard((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()+i) && canMoveNorthEast){	
+				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()+i)) == null )){
+					Position newPosition = new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()+i);
 					allValidPositions.add(newPosition);									
-				}else if(currentState.getPieceAt(new Position((char)((int)origin.getColumn()+i), origin.getRow()+i)).getOwner() != currentState.getPieceAt(origin).getOwner()){
-					Position newPosition = new Position((char)((int)origin.getColumn()+i), origin.getRow()+i);
+				}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()+i)).getOwner() != currentState.getPieceAt(currentPosition).getOwner()){
+					Position newPosition = new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()+i);
 					allValidPositions.add(newPosition);
-					checkNorthEast = false;
+					canMoveNorthEast = false;
 				}else
-					checkNorthEast = false;			
+					canMoveNorthEast = false;			
 			}else{
-				checkNorthEast = false;
+				canMoveNorthEast = false;
 			}
 			// Valid locations in North west
-			if( Position.isOnBoard((char)((int)origin.getColumn()-i), origin.getRow()+i) && checkNorthWest){	
-				if((currentState.getPieceAt(new Position((char)((int)origin.getColumn()-i), origin.getRow()+i)) == null)){
-					Position newPosition = new Position((char)((int)origin.getColumn()-i), origin.getRow()+i);
+			if( Position.isOnBoard((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()+i) && canMoveNorthWest){	
+				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()+i)) == null)){
+					Position newPosition = new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()+i);
 					allValidPositions.add(newPosition);									
-				}else if(currentState.getPieceAt(new Position((char)((int)origin.getColumn()-i), origin.getRow()+i)).getOwner() != currentState.getPieceAt(origin).getOwner()){
-					Position newPosition = new Position((char)((int)origin.getColumn()-i), origin.getRow()+i);
+				}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()+i)).getOwner() != currentState.getPieceAt(currentPosition).getOwner()){
+					Position newPosition = new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()+i);
 					allValidPositions.add(newPosition);
-					checkNorthWest = false;
+					canMoveNorthWest = false;
 				}else
-					checkNorthWest = false;			
+					canMoveNorthWest = false;			
 			}else{
-				checkNorthWest = false;
+				canMoveNorthWest = false;
 			}
 			// Valid locations in South east
-			if( Position.isOnBoard((char)((int)origin.getColumn()+i), origin.getRow()-i) && checkSouthEast){	
-				if((currentState.getPieceAt(new Position((char)((int)origin.getColumn()+i), origin.getRow()-i)) == null)){
-					Position newPosition = new Position((char)((int)origin.getColumn()+i), origin.getRow()-i);
+			if( Position.isOnBoard((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()-i) && canMoveSouthEast){	
+				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()-i)) == null)){
+					Position newPosition = new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()-i);
 					allValidPositions.add(newPosition);									
-				}else if(currentState.getPieceAt(new Position((char)((int)origin.getColumn()+i), origin.getRow()-i)).getOwner() != currentState.getPieceAt(origin).getOwner()){
-					Position newPosition = new Position((char)((int)origin.getColumn()+i), origin.getRow()-i);
+				}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()-i)).getOwner() != currentState.getPieceAt(currentPosition).getOwner()){
+					Position newPosition = new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()-i);
 					allValidPositions.add(newPosition);
-					checkSouthEast = false;
+					canMoveSouthEast = false;
 				}else
-					checkSouthEast = false;			
+					canMoveSouthEast = false;			
 			}else{
-				checkSouthEast = false;
+				canMoveSouthEast = false;
 			}
 			// Valid locations in South west
-			if( Position.isOnBoard((char)((int)origin.getColumn()-i), origin.getRow()-i) && checkSouthWest){	
-				if((currentState.getPieceAt(new Position((char)((int)origin.getColumn()-i), origin.getRow()-i)) == null)){
-					Position newPosition = new Position((char)((int)origin.getColumn()-i), origin.getRow()-i);
+			if( Position.isOnBoard((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()-i) && canMoveSouthWest){	
+				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()-i)) == null)){
+					Position newPosition = new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()-i);
 					allValidPositions.add(newPosition);									
-				}else if(currentState.getPieceAt(new Position((char)((int)origin.getColumn()-i), origin.getRow()-i)).getOwner() != currentState.getPieceAt(origin).getOwner()){
-					Position newPosition = new Position((char)((int)origin.getColumn()-i), origin.getRow()-i);
+				}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()-i)).getOwner() != currentState.getPieceAt(currentPosition).getOwner()){
+					Position newPosition = new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()-i);
 					allValidPositions.add(newPosition);
-					checkSouthWest = false;
+					canMoveSouthWest = false;
 				}else
-					checkSouthWest = false;			
+					canMoveSouthWest = false;			
 			}else{
-				checkSouthWest = false;
+				canMoveSouthWest = false;
 			}
 
-			if(checkNorthEast == false && checkNorthWest == false && checkSouthEast == false && checkSouthWest == false){
+			if(canMoveNorthEast == false && canMoveNorthWest == false && canMoveSouthEast == false && canMoveSouthWest == false){
 				break;
 			}
 		}	

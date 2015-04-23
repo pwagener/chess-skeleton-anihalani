@@ -17,6 +17,11 @@ public class CLI {
 	private final PrintStream outStream;
 
 	private GameState gameState = null;
+	
+	//@Amit - This method is only for unit testing purpose
+	public void setGameState(GameState gs){
+		gameState = gs;
+	}
 
 	public CLI(InputStream inputStream, PrintStream outStream) {
 		this.inReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -153,7 +158,7 @@ public class CLI {
 		builder.append(NEWLINE);
 	}
 
-	//@Amit - This function will create a list of all valid and possible moves
+	//@Amit - This function will print the list of all valid and possible moves
 	private void displayPossibleMoves(){
 		List<String> allPossibleMoves = getAllPossibleMoves();
 		for(String  s : allPossibleMoves){
@@ -162,7 +167,7 @@ public class CLI {
 	}
 
 	//@Amit - This function will return all Possible moves
-	private List<String> getAllPossibleMoves(){
+	protected List<String> getAllPossibleMoves(){
 		List<String> allPossibleMoves = new ArrayList<String>();
 		Position[] allPositions = gameState.getAllPiecesOnBoard().keySet().toArray(new Position[0]);
 		for(Position p : allPositions){
@@ -185,6 +190,7 @@ public class CLI {
 		return fromAndToMoves;    	
 	}
 
+	//@Amit - This function moves a piece from <fromPos> to <toPosition>
 	private boolean move(String fromPos, String toPosition){	
 		Position fromPosition = new Position(fromPos);		
 		Piece piece = gameState.getPieceAt(fromPosition);
@@ -192,7 +198,6 @@ public class CLI {
 			writeOutput("The <FROM> position you provided is not correct. "
 					+ "There is no piece on that location OR the the location is not on the board");
 		}else{
-
 			Set<Position> logicallyValidMoves = piece.getValidMoves(gameState, fromPosition);
 			//@Amit -  Make a move only if the <To> position is Valid
 			if(piece.removeCheckPositions(logicallyValidMoves, gameState, fromPosition).toString().contains(toPosition) ){
@@ -205,7 +210,6 @@ public class CLI {
 				return false;				
 			}
 		}
-
 		return false;
 	}
 

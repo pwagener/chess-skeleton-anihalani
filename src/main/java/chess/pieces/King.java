@@ -57,5 +57,5 @@ public class King extends Piece {
 			}
 		}
 		return allValidPositions;	
-	}
+	}	
 }

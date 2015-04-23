@@ -80,20 +80,22 @@ public class Pawn extends Piece {
 			// diagonal moves for kill
 			// right diagonal
 			if(Position.isOnBoard((char)((int)currentPosition.getColumn()+1), currentPosition.getRow()-1)){
-				if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+1), currentPosition.getRow()-1)).getOwner() != null 
-						&& currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+1), currentPosition.getRow()-1)).getOwner()
-						!= currentState.getPieceAt(currentPosition).getOwner()){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()+1), currentPosition.getRow()-1);
-					allValidPositions.add(newPosition);
+				if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+1), currentPosition.getRow()-1)) != null){ 
+					if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+1), currentPosition.getRow()-1)).getOwner()
+							!= currentState.getPieceAt(currentPosition).getOwner()){
+						Position newPosition = new Position((char)((int)currentPosition.getColumn()+1), currentPosition.getRow()-1);
+						allValidPositions.add(newPosition);
+					}
 				}
 			}
 			//left diagonal
 			if(Position.isOnBoard((char)((int)currentPosition.getColumn()-1), currentPosition.getRow()-1)){
-				if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-1), currentPosition.getRow()-1)).getOwner() != null 
-						&& currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-1), currentPosition.getRow()-1)).getOwner()
-						!= currentState.getPieceAt(currentPosition).getOwner()){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()-1), currentPosition.getRow()-1);
-					allValidPositions.add(newPosition);
+				if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-1), currentPosition.getRow()-1)) != null){ 
+					if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-1), currentPosition.getRow()-1)).getOwner()
+							!= currentState.getPieceAt(currentPosition).getOwner()){
+						Position newPosition = new Position((char)((int)currentPosition.getColumn()-1), currentPosition.getRow()-1);
+						allValidPositions.add(newPosition);
+					}
 				}
 			}
 		}

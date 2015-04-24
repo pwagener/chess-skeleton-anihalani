@@ -57,8 +57,8 @@ public class CLITest {
         List<String> output = captureOutput();
 
         assertEquals("Should have had 6 calls to print strings", 6, output.size());
-        assertEquals("It should have printed the board first", 701, output.get(2).length());
-        assertEquals("It should have printed the board again", 701, output.get(4).length());
+        assertEquals("It should have printed the board first", 721, output.get(2).length());
+        assertEquals("It should have printed the board again", 721, output.get(4).length());
     }
 
     @Test
@@ -77,6 +77,30 @@ public class CLITest {
         verify(testOut, atLeastOnce()).println(captor.capture());
 
         return captor.getAllValues();
+    }
+    
+    //@Amit - Unit Test for Move command
+    @Test
+    public void testMoveCommand() throws Exception {
+        runCliWithInput("move a2 a4");
+        List<String> output = captureOutput();
+
+        assertEquals("Should have had 7 output calls", 7, output.size());
+        assertEquals("It should have printed the board first", 721, output.get(2).length());
+        assertEquals("It should have printed the board again after move", 721, output.get(5).length());
+    }
+    
+    //@Amit - Unit Test for List command
+    @Test
+    public void testListCommand() throws Exception {
+        runCliWithInput("list");
+        List<String> output = captureOutput();
+
+        assertEquals("Should have had 26 output calls", 26, output.size());
+        assertEquals("It should have printed the board first", 721, output.get(2).length());
+        assertTrue("The output contains possible moves like a2 a4, b2 b3, b1 c3", output.contains("a2 a4") 
+        		&& output.contains("b2 b3") && output.contains("b1 c3"));
+        assertEquals("It should have printed the board again after the list", 721, output.get(24).length());
     }
 
     private CLI runCliWithInput(String... inputLines) {

@@ -126,7 +126,6 @@ public class GameState {
 
 	/**@Amit
 	 * Method to remove a piece from a given position
-	 * @param piece The piece to place
 	 * @param position The position
 	 */
 	//OVERLOADED METHOD

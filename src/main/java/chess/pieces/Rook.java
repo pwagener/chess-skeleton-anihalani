@@ -12,6 +12,8 @@ import chess.Position;
  */
 public class Rook extends Piece {
 
+	boolean moveUp, moveDown, moveLeft, moveRight;
+
 	public Rook(Player owner) {
 		super(owner);
 	}
@@ -31,77 +33,104 @@ public class Rook extends Piece {
 	public Set<Position> getValidMoves(GameState currentState, Position currentPosition) {
 		//This set would contain a list of all valid positions
 		Set<Position> allValidPositions = new HashSet<Position>();    	
-		//Creating flag variables for each direction of a Rook
-		boolean moveUp, moveDown, moveLeft, moveRight;
-		moveUp = moveDown = moveLeft = moveRight = true;    	
+		// Set all Directions to True
+		setDirectionsTrue();
+
 		for(int i=1; i<=8; i++){    		
 			// possible moves for Rook to go UP
-			if(Position.isOnBoard((char)((int)currentPosition.getColumn()), currentPosition.getRow()+i) && (moveUp == true)){
-				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()), currentPosition.getRow()+i)) == null )){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()), currentPosition.getRow()+i);
-					allValidPositions.add(newPosition);
-				}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()), currentPosition.getRow()+i)).getOwner() 
-						!= currentState.getPieceAt(currentPosition).getOwner()){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()), currentPosition.getRow()+i);
-					allValidPositions.add(newPosition);
-					moveUp = false; 
-				}else
-					moveUp = false;
-			}
-			else
-				moveUp = false;
-
+			allValidPositions.addAll(getMovesForOffset(currentState, currentPosition, 0, i));
 			// possible moves for Rook to go DOWN
-			if(Position.isOnBoard(currentPosition.getColumn(), currentPosition.getRow()-i) && (moveDown == true)){
-				if((currentState.getPieceAt(new Position(currentPosition.getColumn(), currentPosition.getRow()-i)) == null )){
-					Position newPosition = new Position(currentPosition.getColumn(), currentPosition.getRow()-i);
-					allValidPositions.add(newPosition);
-				}else if(currentState.getPieceAt(new Position(currentPosition.getColumn(), currentPosition.getRow()-i)).getOwner() 
-						!= currentState.getPieceAt(currentPosition).getOwner()){
-					Position newPosition = new Position(currentPosition.getColumn(), currentPosition.getRow()-i);
-					allValidPositions.add(newPosition);
-					moveDown = false; 
-				}else
-					moveDown = false;
-			}
-			else
-				moveDown = false;
-
+			allValidPositions.addAll(getMovesForOffset(currentState, currentPosition, 0, -i));
 			// possible moves for Rook to go LEFT
-			if(Position.isOnBoard((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()) && (moveLeft == true)){
-				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow())) == null )){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow());
-					allValidPositions.add(newPosition);
-				}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow())).getOwner() 
-						!= currentState.getPieceAt(currentPosition).getOwner()){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow());
-					allValidPositions.add(newPosition);
-					moveLeft = false; 
-				}else
-					moveLeft = false;
-			}
-			else
-				moveLeft = false;
-
+			allValidPositions.addAll(getMovesForOffset(currentState, currentPosition, -i, 0));
 			// possible moves for Rook to go RIGHT
-			if(Position.isOnBoard((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()) && (moveRight == true)){
-				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow())) == null )){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow());
-					allValidPositions.add(newPosition);
-				}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow())).getOwner() 
-						!= currentState.getPieceAt(currentPosition).getOwner()){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow());
-					allValidPositions.add(newPosition);
-					moveLeft = false; 
-				}else
-					moveLeft = false;
-			}
-			else
-				moveLeft = false;
+			allValidPositions.addAll(getMovesForOffset(currentState, currentPosition, i, 0));
 
 			if((moveLeft == false) && (moveRight == false) && (moveUp == false) && (moveDown == false))
 				break;
 		}    	
 		return allValidPositions;
 	}
+
+	private Set<Position> getMovesForOffset(GameState currentState, Position currentPosition, int xOffset, int yOffset){
+		Set<Position> validOffsetPositions = new HashSet<Position>();
+
+		if( Position.isOnBoard((char)((int)currentPosition.getColumn()+xOffset), currentPosition.getRow()+yOffset) 
+				&& canMoveInDirection(xOffset, yOffset)){	
+			if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+xOffset), currentPosition.getRow()+yOffset)) == null )){
+				Position newPosition = new Position((char)((int)currentPosition.getColumn()+xOffset), currentPosition.getRow()+yOffset);
+				validOffsetPositions.add(newPosition);									
+			}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+xOffset), currentPosition.getRow()+yOffset)).getOwner() != currentState.getPieceAt(currentPosition).getOwner()){
+				Position newPosition = new Position((char)((int)currentPosition.getColumn()+xOffset), currentPosition.getRow()+yOffset);
+				validOffsetPositions.add(newPosition);
+				setDirectionFalse(xOffset, yOffset);
+			}else
+				setDirectionFalse(xOffset, yOffset);			
+		}else{
+			setDirectionFalse(xOffset, yOffset);
+		}
+		return validOffsetPositions;
+	}
+
+	/**@author Amit
+	 * Set the value for a particular direction depending on Offset
+	 * @param xOffset - movement on X Axis
+	 * @param YOffset - movement on  Axis
+	 */
+	private void setDirectionFalse(int xOffset, int yOffset){
+
+		if(Math.signum(xOffset) == 0){
+			//UP
+			if(Math.signum(yOffset) == 1){
+				this.moveUp = false;
+			}else{ //Down
+				this.moveDown = false;
+			}
+		}else{		
+			//RIGHT
+			if(Math.signum(xOffset) == 1){
+				this.moveRight = false;
+			}else{ //LEFT
+				this.moveLeft = false;
+			}			
+
+		}
+	}
+
+	/**@author Amit
+	 * Check if the Bishop can move in a direction defined by offsets
+	 * @param xOffset - movement on X Axis
+	 * @param YOffset - movement on Y Axis
+	 * @return True if it can move in the given direction else return False
+	 */
+	private boolean canMoveInDirection(int xOffset, int yOffset){
+
+		if(Math.signum(xOffset) == 0){
+			//UP
+			if(Math.signum(yOffset) == 1){
+				return this.moveUp;
+			}else{ //Down
+				return this.moveDown;
+			}
+		}else{		
+			//RIGHT
+			if(Math.signum(xOffset) == 1){
+				return this.moveRight;
+			}else{ //LEFT
+				return this.moveLeft;
+			}			
+
+		}
+	}
+
+	/**@author Amit
+	 * Set all the directions that bishop can move to true.
+	 */
+	private void setDirectionsTrue(){
+		this.moveDown = true;
+		this.moveLeft = true;
+		this.moveRight = true;
+		this.moveUp = true;
+	}
+
 }

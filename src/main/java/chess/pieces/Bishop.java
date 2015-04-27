@@ -11,8 +11,16 @@ import chess.Position;
  * The 'Bishop' class
  */
 public class Bishop extends Piece {
+
+	// These variables help us to identify when to stop searching in a particular direction.
+	// i.e. if the position is out of board or if there is a collision with opposite color player
+	private boolean canMoveNorthEast;
+	private boolean canMoveNorthWest;
+	private boolean canMoveSouthEast;
+	private boolean canMoveSouthWest;
+
 	public Bishop(Player owner) {
-		super(owner);
+		super(owner);		
 	}
 
 	@Override
@@ -30,77 +38,113 @@ public class Bishop extends Piece {
 	public Set<Position> getValidMoves(GameState currentState, Position currentPosition) {
 		//This set would contain a list of all valid positions
 		Set<Position> allValidPositions = new HashSet<Position>();
-
-		// These variables help us to identify when to stop searching in a particular direction.
-		// i.e. if the position is out of board or if there is a collision with opposite color player
-		boolean canMoveNorthEast = true;
-		boolean canMoveNorthWest = true;
-		boolean canMoveSouthEast = true;
-		boolean canMoveSouthWest = true;
+		// Set all Directions to True
+		setDirectionsTrue();
 
 		for(int i=1; i<=8; i++){    		
 			// Valid locations in North east
-			if( Position.isOnBoard((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()+i) && canMoveNorthEast){	
-				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()+i)) == null )){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()+i);
-					allValidPositions.add(newPosition);									
-				}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()+i)).getOwner() != currentState.getPieceAt(currentPosition).getOwner()){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()+i);
-					allValidPositions.add(newPosition);
-					canMoveNorthEast = false;
-				}else
-					canMoveNorthEast = false;			
-			}else{
-				canMoveNorthEast = false;
-			}
+			allValidPositions.addAll(getMovesForOffset(currentState, currentPosition, i, i));
 			// Valid locations in North west
-			if( Position.isOnBoard((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()+i) && canMoveNorthWest){	
-				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()+i)) == null)){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()+i);
-					allValidPositions.add(newPosition);									
-				}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()+i)).getOwner() != currentState.getPieceAt(currentPosition).getOwner()){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()+i);
-					allValidPositions.add(newPosition);
-					canMoveNorthWest = false;
-				}else
-					canMoveNorthWest = false;			
-			}else{
-				canMoveNorthWest = false;
-			}
+			allValidPositions.addAll(getMovesForOffset(currentState, currentPosition, -i, i));
 			// Valid locations in South east
-			if( Position.isOnBoard((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()-i) && canMoveSouthEast){	
-				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()-i)) == null)){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()-i);
-					allValidPositions.add(newPosition);									
-				}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()-i)).getOwner() != currentState.getPieceAt(currentPosition).getOwner()){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()+i), currentPosition.getRow()-i);
-					allValidPositions.add(newPosition);
-					canMoveSouthEast = false;
-				}else
-					canMoveSouthEast = false;			
-			}else{
-				canMoveSouthEast = false;
-			}
-			// Valid locations in South west
-			if( Position.isOnBoard((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()-i) && canMoveSouthWest){	
-				if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()-i)) == null)){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()-i);
-					allValidPositions.add(newPosition);									
-				}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()-i)).getOwner() != currentState.getPieceAt(currentPosition).getOwner()){
-					Position newPosition = new Position((char)((int)currentPosition.getColumn()-i), currentPosition.getRow()-i);
-					allValidPositions.add(newPosition);
-					canMoveSouthWest = false;
-				}else
-					canMoveSouthWest = false;			
-			}else{
-				canMoveSouthWest = false;
-			}
+			allValidPositions.addAll(getMovesForOffset(currentState, currentPosition, i, -i));
+			// Valid locations in South West
+			allValidPositions.addAll(getMovesForOffset(currentState, currentPosition, -i, -i));
 
-			if(canMoveNorthEast == false && canMoveNorthWest == false && canMoveSouthEast == false && canMoveSouthWest == false){
+			// Break the loop if the bishop cannot move in any direction
+			if(this.canMoveNorthEast == false && this.canMoveNorthWest == false 
+					&& this.canMoveSouthEast == false && this.canMoveSouthWest == false){
 				break;
 			}
 		}	
-
 		return allValidPositions;	
 	}	
+
+	/**@author Amit
+	 * Return a set of all possible moves for given direction for a Bishop
+	 * @param currentState The current state of the game
+	 * @param currentPosition The current position of the Bishop
+	 * @param xOffset - movement on X Axis
+	 * @param YOffset - movement on Y Axis
+	 * @return Set of valid positions in given direction determined by Offset
+	 */
+	private Set<Position> getMovesForOffset(GameState currentState, Position currentPosition, int xOffset, int yOffset){
+		Set<Position> validOffsetPositions = new HashSet<Position>();
+
+		if( Position.isOnBoard((char)((int)currentPosition.getColumn()+xOffset), currentPosition.getRow()+yOffset) 
+				&& canMoveInDirection(xOffset, yOffset)){	
+			if((currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+xOffset), currentPosition.getRow()+yOffset)) == null )){
+				Position newPosition = new Position((char)((int)currentPosition.getColumn()+xOffset), currentPosition.getRow()+yOffset);
+				validOffsetPositions.add(newPosition);									
+			}else if(currentState.getPieceAt(new Position((char)((int)currentPosition.getColumn()+xOffset), currentPosition.getRow()+yOffset)).getOwner() != currentState.getPieceAt(currentPosition).getOwner()){
+				Position newPosition = new Position((char)((int)currentPosition.getColumn()+xOffset), currentPosition.getRow()+yOffset);
+				validOffsetPositions.add(newPosition);
+				setDirectionFalse(xOffset, yOffset);
+			}else
+				setDirectionFalse(xOffset, yOffset);			
+		}else{
+			setDirectionFalse(xOffset, yOffset);
+		}
+		return validOffsetPositions;
+	}
+
+	/**@author Amit
+	 * Set the value for a particular direction depending on Offset
+	 * @param xOffset - movement on X Axis
+	 * @param YOffset - movement on Y Axis
+	 */
+	private void setDirectionFalse(int xOffset, int yOffset){
+
+		if(Math.signum(xOffset) == 1){
+			//North East
+			if(Math.signum(yOffset) == 1){
+				this.canMoveNorthEast = false;
+			}else{ //South East
+				this.canMoveSouthEast = false;
+			}
+		}else{		
+			//North West
+			if(Math.signum(yOffset) == 1){
+				this.canMoveNorthWest = false;
+			}else{ //South West
+				this.canMoveSouthWest = false;
+			}			
+
+		}
+	}
+
+	/**@author Amit
+	 * Check if the Bishop can move in a direction defined by offsets
+	 * @param xOffset - movement on X Axis
+	 * @param YOffset - movement on  Axis
+	 * @return True if it can move in the given direction else return False
+	 */
+	private boolean canMoveInDirection(int xOffset, int yOffset){
+
+		if(Math.signum(xOffset) == 1){
+			//North East
+			if(Math.signum(yOffset) == 1){
+				return this.canMoveNorthEast;
+			}else{ //South East
+				return this.canMoveSouthEast;
+			}
+		}else{		
+			//North West
+			if(Math.signum(yOffset) == 1){
+				return this.canMoveNorthWest;
+			}else{ //South West
+				return this.canMoveSouthWest;
+			}			
+		}
+	}
+	
+	/**@author Amit
+	 * Set all the directions that bishop can move to true.
+	 */
+	private void setDirectionsTrue(){
+		this.canMoveNorthEast = true;
+		this.canMoveNorthWest = true;
+		this.canMoveSouthEast = true;
+		this.canMoveSouthWest = true;
+	}
 }
